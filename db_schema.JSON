@@ -1,0 +1,49 @@
+{
+  "outline": {
+    "title": "string",
+    "sections": [
+      {
+        "heading": "string",
+        "bullets": ["string"]
+      }
+    ]
+  },
+
+  "report": {
+    "summary": "string",
+    "details": "string"
+  },
+
+  "todos": [
+    {
+      "description": "string",
+      "owner": "string or null",
+      "due_date": "YYYY-MM-DD or null",
+      "status": "pending | in_progress | done | unknown",
+      "source_meeting_id": "integer or null",
+      "confidence": "float between 0 and 1"
+    }
+  ],
+
+  "events": [
+    {
+      "title": "string",
+      "date": "YYYY-MM-DD or null",
+      "deadline": "YYYY-MM-DD or null",
+      "status": "planned | unplanned | complete | cancelled | unknown",
+      "related_tasks": ["task_id or description"],
+      "confidence": "float between 0 and 1"
+    }
+  ],
+
+  "metadata": {
+    "query_interpreted_as": "semantic | structured",
+    "retrieval": {
+      "top_k": "integer",
+      "avg_similarity": "float",
+      "min_similarity": "float",
+      "max_similarity": "float"
+    },
+    "notes": "string"
+  }
+}
