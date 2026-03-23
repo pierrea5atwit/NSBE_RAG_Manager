@@ -1,4 +1,4 @@
-from .embedder import Embedder
+from .embedded import Embedder
 from .chroma_client import ChromaStore
 
 embedder = Embedder()
