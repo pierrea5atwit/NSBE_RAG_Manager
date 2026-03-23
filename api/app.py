@@ -6,13 +6,11 @@
 """
 
 from flask import Flask, request, jsonify
-from llm.ollama_client import OllamaClient
+from llm.ollama import OllamaClient
 from llm.prompts import build_prompt
 
-from vectorstore.embedder import Embedder
+from vectorstore.embedded import Embedder
 from vectorstore.chroma_client import ChromaStore
-from llm.prompts import build_prompt
-from llm.ollama_client import OllamaClient
 
 app = Flask(__name__)
 ollama = OllamaClient(model_name="mistral")
