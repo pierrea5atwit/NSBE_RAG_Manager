@@ -1,11 +1,26 @@
-from sentence_transformers import SentenceTransformer
+import requests
 
 class Embedder:
-    def __init__(self, model_name="all-MiniLM-L6-v2"):
-        self.model = SentenceTransformer(model_name)
+    def __init__(self, model="nomic-embed-text", host="http://localhost:11434"):
+        self.model = model
+        self.url = f"{host}/api/embeddings"
 
-    def embed(self, texts: list[str]) -> list[list[float]]:
+    def embed(self, texts):
         """
-        Returns embeddings for a list of texts.
+        Accepts a list of strings and returns a list of embeddings.
         """
-        return self.model.encode(texts, convert_to_numpy=True).tolist()
+        if isinstance(texts, str):
+            texts = [texts]
+
+        embeddings = []
+        for t in texts:
+            payload = {
+                "model": self.model,
+                "prompt": t
+            }
+            response = requests.post(self.url, json=payload)
+            response.raise_for_status()
+            emb = response.json().get("embedding")
+            embeddings.append(emb)
+
+        return embeddings

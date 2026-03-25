@@ -1,4 +1,4 @@
-from vectorstore.embedded import Embedder
+from api.vectorstore.embedded import Embedder
 
 def test_embedder_output_shape():
     embedder = Embedder()

@@ -1,21 +1,25 @@
-"""
-
-- Main file for LLM functions, API usage and programming for RAG setup
-- 
-
-"""
+"""Main API entrypoint for RAG querying."""
 
 from flask import Flask, request, jsonify
-from llm.ollama import OllamaClient
-from llm.prompts import build_prompt
 
-from vectorstore.embedded import Embedder
-from vectorstore.chroma_client import ChromaStore
+try:
+    from .llm.prompts import build_prompt
+    from .startup_check import run_startup_checks
+    from .warmup import warmup_models
+    from .vectorstore.chroma_client import ChromaStore
+except ImportError:
+    from llm.prompts import build_prompt
+    from startup_check import run_startup_checks
+    from warmup import warmup_models
+    from vectorstore.chroma_client import ChromaStore
+
+
+# Required startup checks/warmup before serving requests.
+run_startup_checks()
+embedder, ollama = warmup_models()
+chroma = ChromaStore()
 
 app = Flask(__name__)
-ollama = OllamaClient(model_name="mistral")
-embedder = Embedder()
-chroma = ChromaStore()
 
 @app.post("/query")
 def query():
@@ -45,3 +49,7 @@ def query():
     result = ollama.generate(user_prompt)
 
     return jsonify(result)
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)

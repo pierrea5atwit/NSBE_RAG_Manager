@@ -1,4 +1,4 @@
-from llm.prompts import build_prompt, SYSTEM_PROMPT
+from api.llm.prompts import build_prompt, SYSTEM_PROMPT
 
 def test_system_prompt_contains_schema():
     assert "JSON Schema" in SYSTEM_PROMPT

@@ -1,5 +1,5 @@
 import pytest
-from vectorstore.chroma_client import ChromaStore # type: ignore
+from api.vectorstore.chroma_client import ChromaStore
 
 class FakeCollection:
     def __init__(self):
@@ -28,7 +28,7 @@ class FakeClient:
 
 @pytest.fixture
 def chroma(monkeypatch):
-    monkeypatch.setattr("vectorstore.chroma_client.chromadb.HttpClient", lambda *a, **k: FakeClient())
+    monkeypatch.setattr("api.vectorstore.chroma_client.chromadb.HttpClient", lambda *a, **k: FakeClient())
     return ChromaStore()
 
 def test_add_and_query(chroma):

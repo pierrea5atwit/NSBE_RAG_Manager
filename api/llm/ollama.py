@@ -1,12 +1,16 @@
 import requests
 import json
+import os
 from .prompts import SYSTEM_PROMPT
 
 
 class OllamaClient:
-    def __init__(self, model_name="mistral", host="http://localhost:11434"):
+    def __init__(self, model_name="mistral", host=None):
         self.model_name = model_name
-        self.url = f"{host}/api/generate"
+        resolved_host = host or os.getenv("OLLAMA_HOST", "http://localhost:11434")
+        if not resolved_host.startswith("http://") and not resolved_host.startswith("https://"):
+            resolved_host = f"http://{resolved_host}"
+        self.url = f"{resolved_host}/api/generate"
 
     def generate(self, user_prompt: str) -> dict:
         """
