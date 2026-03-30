@@ -1,11 +1,39 @@
-import json
 import os
 
 import requests
 import streamlit as st
 
+"""
+This Streamlit app serves as a simple interface to test the local RAG (Retrieval-Augmented Generation) system. It allows users to ingest documents into the vector store and query the RAG agent, all while providing quick health checks for the API.
+
+
+Start dependencies and API guide:
+
+    docker compose up --build
+    Ensure Ollama models are available (first run):
+    ollama pull mistral
+    ollama pull nomic-embed-text
+    Re-open Streamlit and run health first from the app:
+    http://localhost:5000/health should return ok
+    Then run ingest/query in Streamlit.
+"""
+
 
 DEFAULT_API_BASE = os.getenv("RAG_API_BASE", "http://localhost:5000")
+
+
+def show_connection_help(api_base_url: str, exc: Exception) -> None:
+    st.error(f"Request error: {exc}")
+    st.info(
+        "Backend is unreachable. Start the API first, then retry. "
+        f"Current target: {api_base_url}"
+    )
+    st.code(
+        "docker compose up --build\n"
+        "# or, local dev:\n"
+        "python -m api.app",
+        language="bash",
+    )
 
 
 st.set_page_config(page_title="Local RAG Test Bench", layout="wide")
@@ -44,7 +72,7 @@ with left:
                     st.error(f"Ingest failed ({response.status_code})")
                     st.json(body)
             except requests.RequestException as exc:
-                st.error(f"Request error: {exc}")
+                show_connection_help(api_base, exc)
 
 with right:
     st.subheader("Ask RAG Agent")
@@ -74,7 +102,7 @@ with right:
                     st.error(f"Query failed ({response.status_code})")
                     st.json(body)
             except requests.RequestException as exc:
-                st.error(f"Request error: {exc}")
+                show_connection_help(api_base, exc)
 
 st.divider()
 st.subheader("Quick Checks")
@@ -85,7 +113,7 @@ if st.button("Run /health"):
         st.write(f"HTTP {response.status_code}")
         st.json(response.json())
     except requests.RequestException as exc:
-        st.error(f"Health check failed: {exc}")
+        show_connection_help(api_base, exc)
 
 with st.expander("Sample cURL"):
     st.code(

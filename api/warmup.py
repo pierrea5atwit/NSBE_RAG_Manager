@@ -1,5 +1,9 @@
-from api.vectorstore.embedded import Embedder
-from api.llm.ollama import OllamaClient
+try:
+    from .vectorstore.embedded import Embedder
+    from .llm.ollama import OllamaClient
+except ImportError:
+    from vectorstore.embedded import Embedder
+    from llm.ollama import OllamaClient
 
 def warmup_models():
     print("Warming up models...")

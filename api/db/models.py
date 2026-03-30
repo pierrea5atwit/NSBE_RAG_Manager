@@ -41,7 +41,7 @@ class Chunk(Base):
     document_id: Mapped[int] = mapped_column(ForeignKey("documents.id", ondelete="CASCADE"), nullable=False)
     chunk_text: Mapped[str] = mapped_column(Text, nullable=False)
     position: Mapped[int] = mapped_column(Integer, nullable=False)
-    metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    chunk_metadata: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     document: Mapped[Document] = relationship(back_populates="chunks")
@@ -70,7 +70,7 @@ class Event(Base):
     event_date: Mapped[Date | None] = mapped_column(Date)
     deadline: Mapped[Date | None] = mapped_column(Date)
     status: Mapped[str | None] = mapped_column(String(64))
-    metadata: Mapped[dict] = mapped_column(JSON, default=dict)
+    event_metadata: Mapped[dict] = mapped_column("metadata", JSON, default=dict)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 

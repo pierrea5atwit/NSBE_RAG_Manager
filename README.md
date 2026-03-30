@@ -1,4 +1,3 @@
-documents
 # Local RAG Backend for Meeting Intelligence
 
 A local, privacy-preserving Retrieval-Augmented Generation backend designed to ingest notes and documents, store semantic memory, and answer questions with structured output.
@@ -52,7 +51,7 @@ Admin:
 3. set OLLAMA_HOST=http://localhost:11434
 4. set CHROMA_HOST=localhost
 5. set CHROMA_PORT=8000
-6. python api/app.py
+6. python -m api.app
 
 ## Testing
 

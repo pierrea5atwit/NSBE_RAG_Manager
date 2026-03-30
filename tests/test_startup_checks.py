@@ -40,6 +40,26 @@ def test_check_chroma_uses_heartbeat_url(monkeypatch):
     assert captured["url"] == "http://localhost:8000/api/v1/heartbeat"
 
 
+def test_check_chroma_uses_env_host_and_port(monkeypatch):
+    captured = {}
+
+    def fake_get(url, timeout):
+        captured["url"] = url
+        captured["timeout"] = timeout
+
+        class FakeResponse:
+            status_code = 200
+
+        return FakeResponse()
+
+    monkeypatch.setenv("CHROMA_HOST", "chroma")
+    monkeypatch.setenv("CHROMA_PORT", "9010")
+    monkeypatch.setattr("api.startup_check.requests.get", fake_get)
+
+    assert check_chroma() is True
+    assert captured["url"] == "http://chroma:9010/api/v1/heartbeat"
+
+
 def test_run_startup_checks_raises_if_ollama_unavailable(monkeypatch):
     monkeypatch.setattr("api.startup_check.check_ollama", lambda: False)
     monkeypatch.setattr("api.startup_check.check_chroma", lambda: True)

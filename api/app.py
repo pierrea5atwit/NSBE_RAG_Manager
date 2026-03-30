@@ -167,7 +167,7 @@ def ingest_document():
                 document_id=document.id,
                 chunk_text=ctext,
                 position=idx,
-                metadata={"source": "document_ingest"},
+                chunk_metadata={"source": "document_ingest"},
             )
             db.add(row)
             db.flush()
@@ -229,7 +229,7 @@ def ingest_meeting():
                 document_id=document.id,
                 chunk_text=ctext,
                 position=idx,
-                metadata={"source": "meeting_ingest"},
+                chunk_metadata={"source": "meeting_ingest"},
             )
             db.add(row)
             db.flush()
@@ -488,7 +488,7 @@ def list_events():
                     "event_date": e.event_date.isoformat() if e.event_date else None,
                     "deadline": e.deadline.isoformat() if e.deadline else None,
                     "status": e.status,
-                    "metadata": e.metadata,
+                    "metadata": e.event_metadata,
                 }
                 for e in rows
             ]
