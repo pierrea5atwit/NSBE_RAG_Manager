@@ -1,8 +1,8 @@
 from .embedded import Embedder
 from .chroma_client import ChromaStore
 
-embedder = Embedder()
-chroma = ChromaStore()
+embedder = None
+chroma = None
 
 def ingest_chunks(chunks: list[dict]):
     """
@@ -11,6 +11,12 @@ def ingest_chunks(chunks: list[dict]):
       ...
     ]
     """
+
+    global embedder, chroma
+    if embedder is None:
+        embedder = Embedder()
+    if chroma is None:
+        chroma = ChromaStore()
 
     texts = [c["text"] for c in chunks]
     embeddings = embedder.embed(texts)

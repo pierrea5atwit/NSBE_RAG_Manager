@@ -1,8 +1,16 @@
 import requests
 import time
+import os
+
+
+def _normalize_base_url(host: str, default_port: int) -> str:
+    if host.startswith("http://") or host.startswith("https://"):
+        return host
+    return f"http://{host}:{default_port}"
 
 def check_ollama(timeout=10):
-    url = "http://localhost:11434/api/tags"
+    ollama_host = os.getenv("OLLAMA_HOST", "localhost")
+    url = f"{_normalize_base_url(ollama_host, 11434)}/api/tags"
     start = time.time()
 
     while time.time() - start < timeout:
@@ -17,8 +25,11 @@ def check_ollama(timeout=10):
 
 
 def check_chroma(timeout=10):
+    chroma_host = os.getenv("CHROMA_HOST", "localhost")
+    chroma_port = int(os.getenv("CHROMA_PORT", "8000"))
+    base = _normalize_base_url(chroma_host, chroma_port)
     try:
-        r = requests.get("http://localhost:8000/api/v1/heartbeat", timeout=2)
+        r = requests.get(f"{base}/api/v1/heartbeat", timeout=2)
         return r.status_code == 200
     except Exception:
         return False
@@ -29,13 +40,13 @@ def run_startup_checks():
 
     if not check_ollama():
         raise RuntimeError(
-            "Ollama is not running at http://localhost:11434/api/tags"
+            "Ollama is not running at /api/tags"
         )
     print("Ollama is running")
 
     if not check_chroma():
         raise RuntimeError(
-            "ChromaDB is not running at http://localhost:8000/api/v1/heartbeat"
+            "ChromaDB is not running at /api/v1/heartbeat"
         )
     print("ChromaDB is reachable")
 

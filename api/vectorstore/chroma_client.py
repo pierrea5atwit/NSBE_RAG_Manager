@@ -1,11 +1,25 @@
 import chromadb
 from chromadb.config import Settings
+import os
 
 class ChromaStore:
-    def __init__(self, collection_name="meeting_chunks", host="chroma", port=8000):
+    def __init__(self, collection_name="meeting_chunks", host=None, port=None):
+        resolved_host = host or os.getenv("CHROMA_HOST", "localhost")
+        resolved_port = int(port or os.getenv("CHROMA_PORT", "8000"))
+
+        if resolved_host.startswith("http://"):
+            resolved_host = resolved_host[len("http://"):]
+        elif resolved_host.startswith("https://"):
+            resolved_host = resolved_host[len("https://"):]
+
+        if ":" in resolved_host:
+            host_part, port_part = resolved_host.rsplit(":", 1)
+            resolved_host = host_part
+            resolved_port = int(port_part)
+
         self.client = chromadb.HttpClient(
-            host=host,
-            port=port,
+            host=resolved_host,
+            port=resolved_port,
             settings=Settings(allow_reset=True)
         )
 
